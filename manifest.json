@@ -1,0 +1,48 @@
+{
+  "name": "Chrome Shift",
+  "author": "Douglas Mayle",
+  "version": "0.9.0",
+  "description": "Simple tab mover for tiling environments like sway",
+  "manifest_version": 3,
+  "permissions": [
+    "system.display",
+    "tabs"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "commands": {
+    "detach-tab": {
+      // Suggest keys are limited to four, but this would be <Alt-J> if I could suggest it.
+      "description": "Detach the current tab into a new window"
+    },
+    "attach-left": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+H",
+        "mac": "MacCtrl+Shift+H"
+      },
+      "description": "Attach the highlighted tabs to the next window closest on the left"
+    },
+    "attach-right": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+L",
+        "mac": "MacCtrl+Shift+L"
+      },
+      "description": "Attach the highlighted tabs to the next window closest on the right"
+    },
+    "attach-up": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+K",
+        "mac": "MacCtrl+Shift+K"
+      },
+      "description": "Attach the highlighted tabs to the next window closest above"
+    },
+    "attach-down": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+J",
+        "mac": "MacCtrl+Shift+J"
+      },
+      "description": "Attach the highlighted tabs to the next window closest below"
+    }
+  }
+}
