@@ -1,19 +1,19 @@
 {
+  "manifest_version": 3,
   "name": "Chrome Shift",
   "author": "Douglas Mayle",
   "version": "0.9.0",
   "description": "Simple tab mover for tiling environments like sway",
-  "manifest_version": 3,
   "permissions": [
     "system.display",
     "tabs"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.ts",
+    "type": "module"
   },
   "commands": {
     "detach-tab": {
-      // Suggest keys are limited to four, but this would be <Alt-J> if I could suggest it.
       "description": "Detach the current tab into a new window"
     },
     "attach-left": {

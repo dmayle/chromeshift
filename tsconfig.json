@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "ES6",
+    "moduleResolution": "bundler",
+    "module": "ES6",
+    "esModuleInterop": true,
+    "sourceMap": false,
+    "rootDir": "src",
+    "outDir": "dist",
+    "noEmitOnError": true,
+    "lib": ["es2015", "dom" ]
+  },
+  "types": [
+    "chrome"
+  ]
+}
