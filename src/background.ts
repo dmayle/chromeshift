@@ -1,5 +1,5 @@
 import { attach, detachTab } from "./actions";
-import { checkCommandShortcuts, Directions } from "./helpers";
+import { checkCommandShortcuts, Direction } from "./helpers";
 
 /** All of the commands supported by this extension */
 enum Commands {
@@ -27,16 +27,16 @@ chrome.commands.onCommand.addListener((command: string) => {
       detachTab();
       break;
     case Commands.ATTACH_LEFT:
-      attach(Directions.LEFT);
+      attach(Direction.LEFT);
       break;
     case Commands.ATTACH_RIGHT:
-      attach(Directions.RIGHT);
+      attach(Direction.RIGHT);
       break;
     case Commands.ATTACH_UP:
-      attach(Directions.UP);
+      attach(Direction.UP);
       break;
     case Commands.ATTACH_DOWN:
-      attach(Directions.DOWN);
+      attach(Direction.DOWN);
       break;
     default:
       console.log("Unsupported command: ", command);

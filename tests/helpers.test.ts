@@ -1,4 +1,4 @@
-import { Directions, windowsInOrder } from "../src/helpers";
+import { Direction, getNextWindowId } from "../src/helpers";
 import { strict as assert } from 'assert';
 import { describe, test } from 'node:test';
 /**
@@ -16,11 +16,12 @@ describe('Testcase ONE', () => {
 /**
  * #############
  * #     #     #
- * #  A  #  B  #
+ * #  1  #  2  #
  * #     #     #
  * #############
  */
-  const windowA: chrome.windows.Window = {
+  const window1: chrome.windows.Window = {
+    "id": 1,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -29,7 +30,8 @@ describe('Testcase ONE', () => {
     "left": 0,
     "width": 10,
   };
-  const windowB: chrome.windows.Window = {
+  const window2: chrome.windows.Window = {
+    "id": 2,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -39,16 +41,16 @@ describe('Testcase ONE', () => {
     "width": 10,
   };
   test('Left-to-Right Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.RIGHT));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.RIGHT), window2.id);
   });
   test('Right-to-Left Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.LEFT));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.LEFT), window1.id);
   });
   test('Top-to-Bottom Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.DOWN));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.DOWN), window2.id);
   });
   test('Bottom-to-Top Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.UP));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.UP), window1.id);
   });
 });
 
@@ -56,13 +58,14 @@ describe('Testcase TWO', () => {
 /**
  *       #######
  *       #     #
- * #######  B  #
+ * #######  2  #
  * #     #     #
- * #  A  #######
+ * #  1  #######
  * #     #
  * #######
  */
-  const windowA: chrome.windows.Window = {
+  const window1: chrome.windows.Window = {
+    "id": 1,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -71,7 +74,8 @@ describe('Testcase TWO', () => {
     "left": 0,
     "width": 10,
   };
-  const windowB: chrome.windows.Window = {
+  const window2: chrome.windows.Window = {
+    "id": 2,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -81,16 +85,16 @@ describe('Testcase TWO', () => {
     "width": 10,
   };
   test('Left-to-Right Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.RIGHT));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.RIGHT), window2.id);
   });
   test('Right-to-Left Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.LEFT));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.LEFT), window1.id);
   });
   test('Top-to-Bottom Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.DOWN));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.DOWN), window1.id);
   });
   test('Bottom-to-Top Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.UP));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.UP), window2.id);
   });
 });
 
@@ -98,13 +102,14 @@ describe('Testcase THREE', () => {
 /**
  * #############
  * #     #     #
- * #     #  B  #
- * #  A  #     #
+ * #     #  2  #
+ * #  1  #     #
  * #     #######
  * #     #
  * #######
  */
-  const windowA: chrome.windows.Window = {
+  const window1: chrome.windows.Window = {
+    "id": 1,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -113,7 +118,8 @@ describe('Testcase THREE', () => {
     "left": 0,
     "width": 10,
   };
-  const windowB: chrome.windows.Window = {
+  const window2: chrome.windows.Window = {
+    "id": 2,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -123,16 +129,16 @@ describe('Testcase THREE', () => {
     "width": 10,
   };
   test('Left-to-Right Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.RIGHT));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.RIGHT), window2.id);
   });
   test('Right-to-Left Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.LEFT));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.LEFT), window1.id);
   });
   test('Top-to-Bottom Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.DOWN));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.DOWN), window1.id);
   });
   test('Bottom-to-Top Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.UP));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.UP), window2.id);
   });
 });
 
@@ -142,13 +148,14 @@ describe('Testcase FOUR', () => {
  * #     #
  * #     #######
  * #     #     #
- * #  A  #  B  #
+ * #  1  #  2  #
  * #     #     #
  * #     #######
  * #     #
  * #######
  */
-  const windowA: chrome.windows.Window = {
+  const window1: chrome.windows.Window = {
+    "id": 1,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -157,7 +164,8 @@ describe('Testcase FOUR', () => {
     "left": 0,
     "width": 10,
   };
-  const windowB: chrome.windows.Window = {
+  const window2: chrome.windows.Window = {
+    "id": 2,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -167,16 +175,16 @@ describe('Testcase FOUR', () => {
     "width": 10,
   };
   test('Left-to-Right Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.RIGHT));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.RIGHT), window2.id);
   });
   test('Right-to-Left Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.LEFT));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.LEFT), window1.id);
   });
   test('Top-to-Bottom Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.DOWN));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.DOWN), window2.id);
   });
   test('Bottom-to-Top Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.UP));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.UP), window1.id);
   });
 });
 
@@ -185,12 +193,13 @@ describe('Testcase FIVE', () => {
  * #######
  * #     #
  * #     #######
- * #  A  #     #
- * #     #  B  #
+ * #  1  #     #
+ * #     #  2  #
  * #     #     #
  * #############
  */
-  const windowA: chrome.windows.Window = {
+  const window1: chrome.windows.Window = {
+    "id": 1,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -199,7 +208,8 @@ describe('Testcase FIVE', () => {
     "left": 0,
     "width": 10,
   };
-  const windowB: chrome.windows.Window = {
+  const window2: chrome.windows.Window = {
+    "id": 2,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -209,16 +219,16 @@ describe('Testcase FIVE', () => {
     "width": 10,
   };
   test('Left-to-Right Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.RIGHT));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.RIGHT), window2.id);
   });
   test('Right-to-Left Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.LEFT));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.LEFT), window1.id);
   });
   test('Top-to-Bottom Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.DOWN));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.DOWN), window2.id);
   });
   test('Bottom-to-Top Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.UP));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.UP), window1.id);
   });
 });
 
@@ -226,13 +236,14 @@ describe('Testcase SIX', () => {
 /**
  * #######
  * #     #
- * #  A  #######
+ * #  1  #######
  * #     #     #
- * #######  B  #
+ * #######  2  #
  *       #     #
  *       #######
  */
-  const windowA: chrome.windows.Window = {
+  const window1: chrome.windows.Window = {
+    "id": 1,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -241,7 +252,8 @@ describe('Testcase SIX', () => {
     "left": 0,
     "width": 10,
   };
-  const windowB: chrome.windows.Window = {
+  const window2: chrome.windows.Window = {
+    "id": 2,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -251,16 +263,16 @@ describe('Testcase SIX', () => {
     "width": 10,
   };
   test('Left-to-Right Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.RIGHT));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.RIGHT), window2.id);
   });
   test('Right-to-Left Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.LEFT));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.LEFT), window1.id);
   });
   test('Top-to-Bottom Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.DOWN));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.DOWN), window2.id);
   });
   test('Bottom-to-Top Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.UP));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.UP), window1.id);
   });
 });
 
@@ -270,13 +282,14 @@ describe('Testcase SEVEN', () => {
  *       #     #
  * #######     #
  * #     #     #
- * #  A  #  B  #
+ * #  1  #  2  #
  * #     #     #
  * #######     #
  *       #     #
  *       #######
  */
-  const windowA: chrome.windows.Window = {
+  const window1: chrome.windows.Window = {
+    "id": 1,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -285,7 +298,8 @@ describe('Testcase SEVEN', () => {
     "left": 0,
     "width": 10,
   };
-  const windowB: chrome.windows.Window = {
+  const window2: chrome.windows.Window = {
+    "id": 2,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -295,16 +309,16 @@ describe('Testcase SEVEN', () => {
     "width": 10,
   };
   test('Left-to-Right Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.RIGHT));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.RIGHT), window2.id);
   });
   test('Right-to-Left Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.LEFT));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.LEFT), window1.id);
   });
   test('Top-to-Bottom Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.DOWN));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.DOWN), window1.id);
   });
   test('Bottom-to-Top Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.UP));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.UP), window2.id);
   });
 });
 
@@ -312,15 +326,16 @@ describe('Testcase EIGHT', () => {
 /**
  * #######
  * #     #
- * #  A  #
+ * #  1  #
  * #     #
  * #######
  * #     #
- * #  B  #
+ * #  2  #
  * #     #
  * #######
  */
-  const windowA: chrome.windows.Window = {
+  const window1: chrome.windows.Window = {
+    "id": 1,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -329,7 +344,8 @@ describe('Testcase EIGHT', () => {
     "left": 0,
     "width": 10,
   };
-  const windowB: chrome.windows.Window = {
+  const window2: chrome.windows.Window = {
+    "id": 2,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -339,16 +355,16 @@ describe('Testcase EIGHT', () => {
     "width": 10,
   };
   test('Left-to-Right Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.RIGHT));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.RIGHT), window2.id);
   });
   test('Right-to-Left Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.LEFT));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.LEFT), window1.id);
   });
   test('Top-to-Bottom Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.DOWN));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.DOWN), window2.id);
   });
   test('Bottom-to-Top Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.UP));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.UP), window1.id);
   });
 });
 
@@ -356,15 +372,16 @@ describe('Testcase NINE', () => {
 /**
  *    #######
  *    #     #
- *    #  A  #
+ *    #  1  #
  *    #     #
  * ##########
  * #     #
- * #  B  #
+ * #  2  #
  * #     #
  * #######
  */
-  const windowA: chrome.windows.Window = {
+  const window1: chrome.windows.Window = {
+    "id": 1,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -373,7 +390,8 @@ describe('Testcase NINE', () => {
     "left": 10,
     "width": 20,
   };
-  const windowB: chrome.windows.Window = {
+  const window2: chrome.windows.Window = {
+    "id": 2,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -383,16 +401,16 @@ describe('Testcase NINE', () => {
     "width": 20,
   };
   test('Left-to-Right Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.RIGHT));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.RIGHT), window1.id);
   });
   test('Right-to-Left Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.LEFT));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.LEFT), window2.id);
   });
   test('Top-to-Bottom Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.DOWN));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.DOWN), window2.id);
   });
   test('Bottom-to-Top Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.UP));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.UP), window1.id);
   });
 });
 
@@ -400,15 +418,16 @@ describe('Testcase TEN', () => {
 /**
  * ###########
  * #         #
- * #    A    #
+ * #    1    #
  * #         #
  * ###########
  * #     #
- * #  B  #
+ * #  2  #
  * #     #
  * #######
  */
-  const windowA: chrome.windows.Window = {
+  const window1: chrome.windows.Window = {
+    "id": 1,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -417,7 +436,8 @@ describe('Testcase TEN', () => {
     "left": 0,
     "width": 20,
   };
-  const windowB: chrome.windows.Window = {
+  const window2: chrome.windows.Window = {
+    "id": 2,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -427,16 +447,16 @@ describe('Testcase TEN', () => {
     "width": 10,
   };
   test('Left-to-Right Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.RIGHT));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.RIGHT), window1.id);
   });
   test('Right-to-Left Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.LEFT));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.LEFT), window2.id);
   });
   test('Top-to-Bottom Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.DOWN));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.DOWN), window2.id);
   });
   test('Bottom-to-Top Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.UP));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.UP), window1.id);
   });
 });
 
@@ -444,15 +464,16 @@ describe('Testcase ELEVEN', () => {
 /**
  * #############
  * #           #
- * #     A     #
+ * #     1     #
  * #           #
  * #############
  *    #     #
- *    #  B  #
+ *    #  2  #
  *    #     #
  *    #######
  */
-  const windowA: chrome.windows.Window = {
+  const window1: chrome.windows.Window = {
+    "id": 1,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -461,7 +482,8 @@ describe('Testcase ELEVEN', () => {
     "left": 0,
     "width": 30,
   };
-  const windowB: chrome.windows.Window = {
+  const window2: chrome.windows.Window = {
+    "id": 2,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -471,16 +493,16 @@ describe('Testcase ELEVEN', () => {
     "width": 10,
   };
   test('Left-to-Right Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.RIGHT));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.RIGHT), window2.id);
   });
   test('Right-to-Left Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.LEFT));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.LEFT), window1.id);
   });
   test('Top-to-Bottom Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.DOWN));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.DOWN), window2.id);
   });
   test('Bottom-to-Top Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.UP));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.UP), window1.id);
   });
 });
 
@@ -488,15 +510,16 @@ describe('Testcase TWELVE', () => {
 /**
  * ###########
  * #         #
- * #    A    #
+ * #    1    #
  * #         #
  * ###########
  *     #     #
- *     #  B  #
+ *     #  2  #
  *     #     #
  *     #######
  */
-  const windowA: chrome.windows.Window = {
+  const window1: chrome.windows.Window = {
+    "id": 1,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -505,7 +528,8 @@ describe('Testcase TWELVE', () => {
     "left": 0,
     "width": 20,
   };
-  const windowB: chrome.windows.Window = {
+  const window2: chrome.windows.Window = {
+    "id": 2,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -515,16 +539,16 @@ describe('Testcase TWELVE', () => {
     "width": 10,
   };
   test('Left-to-Right Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.RIGHT));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.RIGHT), window2.id);
   });
   test('Right-to-Left Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.LEFT));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.LEFT), window1.id);
   });
   test('Top-to-Bottom Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.DOWN));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.DOWN), window2.id);
   });
   test('Bottom-to-Top Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.UP));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.UP), window1.id);
   });
 });
 
@@ -532,15 +556,16 @@ describe('Testcase THIRTEEN', () => {
 /**
  * #######
  * #     #
- * #  A  #
+ * #  1  #
  * #     #
  * ##########
  *    #     #
- *    #  B  #
+ *    #  2  #
  *    #     #
  *    #######
  */
-  const windowA: chrome.windows.Window = {
+  const window1: chrome.windows.Window = {
+    "id": 1,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -549,7 +574,8 @@ describe('Testcase THIRTEEN', () => {
     "left": 0,
     "width": 20,
   };
-  const windowB: chrome.windows.Window = {
+  const window2: chrome.windows.Window = {
+    "id": 2,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -559,16 +585,16 @@ describe('Testcase THIRTEEN', () => {
     "width": 20,
   };
   test('Left-to-Right Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.RIGHT));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.RIGHT), window2.id);
   });
   test('Right-to-Left Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.LEFT));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.LEFT), window1.id);
   });
   test('Top-to-Bottom Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.DOWN));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.DOWN), window2.id);
   });
   test('Bottom-to-Top Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.UP));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.UP), window1.id);
   });
 });
 
@@ -576,15 +602,16 @@ describe('Testcase FOURTEEN', () => {
 /**
  *    #######
  *    #     #
- *    #  A  #
+ *    #  1  #
  *    #     #
  * #############
  * #           #
- * #     B     #
+ * #     2     #
  * #           #
  * #############
  */
-  const windowA: chrome.windows.Window = {
+  const window1: chrome.windows.Window = {
+    "id": 1,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -593,7 +620,8 @@ describe('Testcase FOURTEEN', () => {
     "left": 10,
     "width": 10,
   };
-  const windowB: chrome.windows.Window = {
+  const window2: chrome.windows.Window = {
+    "id": 2,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -603,16 +631,16 @@ describe('Testcase FOURTEEN', () => {
     "width": 30,
   };
   test('Left-to-Right Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.RIGHT));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.RIGHT), window1.id);
   });
   test('Right-to-Left Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.LEFT));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.LEFT), window2.id);
   });
   test('Top-to-Bottom Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.DOWN));
+    assert.equal(getNextWindowId(window1, [window1, window2], Direction.DOWN), window2.id);
   });
   test('Bottom-to-Top Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.UP));
+    assert.equal(getNextWindowId(window2, [window1, window2], Direction.UP), window1.id);
   });
 });
 
@@ -620,15 +648,16 @@ describe('Testcase FIFTEEN', () => {
 /**
  * #############
  * #     #     #
- * #     #  B  #
+ * #     #  2  #
  * #     #     #
- * #  A  #######
+ * #  1  #######
  * #     #     #
- * #     #  C  #
+ * #     #  3  #
  * #     #     #
  * #############
  */
-  const windowA: chrome.windows.Window = {
+  const window1: chrome.windows.Window = {
+    "id": 1,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -637,7 +666,8 @@ describe('Testcase FIFTEEN', () => {
     "left": 0,
     "width": 10,
   };
-  const windowB: chrome.windows.Window = {
+  const window2: chrome.windows.Window = {
+    "id": 2,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -646,7 +676,8 @@ describe('Testcase FIFTEEN', () => {
     "left": 10,
     "width": 10,
   };
-  const windowC: chrome.windows.Window = {
+  const window3: chrome.windows.Window = {
+    "id": 3,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -656,20 +687,20 @@ describe('Testcase FIFTEEN', () => {
     "width": 10,
   };
   test('Left-to-Right Ordering', () => {
-    assert(windowsInOrder(windowA, windowB, Directions.RIGHT));
-    assert(windowsInOrder(windowB, windowC, Directions.RIGHT));
+    assert.equal(getNextWindowId(window1, [window1, window2, window3], Direction.RIGHT), window2.id);
+    assert.equal(getNextWindowId(window2, [window1, window2, window3], Direction.RIGHT), window3.id);
   });
   test('Right-to-Left Ordering', () => {
-    assert(windowsInOrder(windowC, windowB, Directions.LEFT));
-    assert(windowsInOrder(windowB, windowA, Directions.LEFT));
+    assert.equal(getNextWindowId(window3, [window1, window2, window3], Direction.LEFT), window2.id);
+    assert.equal(getNextWindowId(window2, [window1, window2, window3], Direction.LEFT), window1.id);
   });
   test('Top-to-Bottom Ordering', () => {
-    assert(windowsInOrder(windowB, windowC, Directions.DOWN));
-    assert(windowsInOrder(windowC, windowA, Directions.DOWN));
+    assert.equal(getNextWindowId(window2, [window1, window2, window3], Direction.DOWN), window1.id);
+    assert.equal(getNextWindowId(window1, [window1, window2, window3], Direction.DOWN), window3.id);
   });
   test('Bottom-to-Top Ordering', () => {
-    assert(windowsInOrder(windowC, windowA, Directions.UP));
-    assert(windowsInOrder(windowA, windowB, Directions.UP));
+    assert.equal(getNextWindowId(window3, [window1, window2, window3], Direction.UP), window1.id);
+    assert.equal(getNextWindowId(window1, [window1, window2, window3], Direction.UP), window2.id);
   });
 });
 
@@ -677,15 +708,16 @@ describe('Testcase SIXTEEN', () => {
 /**
  * #############
  * #     #     #
- * #  A  #     #
+ * #  1  #     #
  * #     #     #
- * #######  C  #
+ * #######  3  #
  * #     #     #
- * #  B  #     #
+ * #  2  #     #
  * #     #     #
  * #############
  */
-  const windowA: chrome.windows.Window = {
+  const window1: chrome.windows.Window = {
+    "id": 1,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -694,7 +726,8 @@ describe('Testcase SIXTEEN', () => {
     "left": 0,
     "width": 10,
   };
-  const windowB: chrome.windows.Window = {
+  const window2: chrome.windows.Window = {
+    "id": 2,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -703,7 +736,8 @@ describe('Testcase SIXTEEN', () => {
     "left": 0,
     "width": 10,
   };
-  const windowC: chrome.windows.Window = {
+  const window3: chrome.windows.Window = {
+    "id": 3,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -713,20 +747,20 @@ describe('Testcase SIXTEEN', () => {
     "width": 10,
   };
   test('Left-to-Right Ordering', () => {
-    assert(windowsInOrder(windowA, windowC, Directions.RIGHT));
-    assert(windowsInOrder(windowC, windowB, Directions.RIGHT));
+    assert.equal(getNextWindowId(window1, [window1, window2, window3], Direction.RIGHT), window2.id);
+    assert.equal(getNextWindowId(window2, [window1, window2, window3], Direction.RIGHT), window3.id);
   });
   test('Right-to-Left Ordering', () => {
-    assert(windowsInOrder(windowC, windowB, Directions.LEFT));
-    assert(windowsInOrder(windowB, windowA, Directions.LEFT));
+    assert.equal(getNextWindowId(window3, [window1, window2, window3], Direction.LEFT), window2.id);
+    assert.equal(getNextWindowId(window2, [window1, window2, window3], Direction.LEFT), window1.id);
   });
   test('Top-to-Bottom Ordering', () => {
-    assert(windowsInOrder(windowA, windowC, Directions.DOWN));
-    assert(windowsInOrder(windowC, windowB, Directions.DOWN));
+    assert.equal(getNextWindowId(window1, [window1, window2, window3], Direction.DOWN), window3.id);
+    assert.equal(getNextWindowId(window3, [window1, window2, window3], Direction.DOWN), window2.id);
   });
   test('Bottom-to-Top Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.UP));
-    assert(windowsInOrder(windowA, windowC, Directions.UP));
+    assert.equal(getNextWindowId(window2, [window1, window2, window3], Direction.UP), window3.id);
+    assert.equal(getNextWindowId(window3, [window1, window2, window3], Direction.UP), window1.id);
   });
 });
 
@@ -734,15 +768,16 @@ describe('Testcase SEVENTEEN', () => {
 /**
  * #############
  * #           #
- * #     A     #
+ * #     1     #
  * #           #
  * #############
  * #     #     #
- * #  B  #  C  #
+ * #  2  #  3  #
  * #     #     #
  * #############
  */
-  const windowA: chrome.windows.Window = {
+  const window1: chrome.windows.Window = {
+    "id": 1,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -751,7 +786,8 @@ describe('Testcase SEVENTEEN', () => {
     "left": 0,
     "width": 20,
   };
-  const windowB: chrome.windows.Window = {
+  const window2: chrome.windows.Window = {
+    "id": 2,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -760,7 +796,8 @@ describe('Testcase SEVENTEEN', () => {
     "left": 0,
     "width": 10,
   };
-  const windowC: chrome.windows.Window = {
+  const window3: chrome.windows.Window = {
+    "id": 3,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -770,20 +807,20 @@ describe('Testcase SEVENTEEN', () => {
     "width": 10,
   };
   test('Left-to-Right Ordering', () => {
-    assert(windowsInOrder(windowB, windowA, Directions.RIGHT));
-    assert(windowsInOrder(windowA, windowC, Directions.RIGHT));
+    assert.equal(getNextWindowId(window2, [window1, window2, window3], Direction.RIGHT), window1.id);
+    assert.equal(getNextWindowId(window1, [window1, window2, window3], Direction.RIGHT), window3.id);
   });
   test('Right-to-Left Ordering', () => {
-    assert(windowsInOrder(windowC, windowB, Directions.LEFT));
-    assert(windowsInOrder(windowB, windowA, Directions.LEFT));
+    assert.equal(getNextWindowId(window3, [window1, window2, window3], Direction.LEFT), window1.id);
+    assert.equal(getNextWindowId(window1, [window1, window2, window3], Direction.LEFT), window2.id);
   });
   test('Top-to-Bottom Ordering', () => {
-    assert(windowsInOrder(windowA, windowC, Directions.DOWN));
-    assert(windowsInOrder(windowC, windowA, Directions.DOWN));
+    assert.equal(getNextWindowId(window1, [window1, window2, window3], Direction.DOWN), window2.id);
+    assert.equal(getNextWindowId(window2, [window1, window2, window3], Direction.DOWN), window3.id);
   });
   test('Bottom-to-Top Ordering', () => {
-    assert(windowsInOrder(windowB, windowC, Directions.UP));
-    assert(windowsInOrder(windowC, windowA, Directions.UP));
+    assert.equal(getNextWindowId(window3, [window1, window2, window3], Direction.UP), window2.id);
+    assert.equal(getNextWindowId(window2, [window1, window2, window3], Direction.UP), window1.id);
   });
 });
 
@@ -791,15 +828,16 @@ describe('Testcase EIGHTEEN', () => {
 /**
  * #############
  * #     #     #
- * #  A  #  B  #
+ * #  1  #  2  #
  * #     #     #
  * #############
  * #           #
- * #     C     #
+ * #     3     #
  * #           #
  * #############
  */
-  const windowA: chrome.windows.Window = {
+  const window1: chrome.windows.Window = {
+    "id": 1,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -808,7 +846,8 @@ describe('Testcase EIGHTEEN', () => {
     "left": 0,
     "width": 10,
   };
-  const windowB: chrome.windows.Window = {
+  const window2: chrome.windows.Window = {
+    "id": 2,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -817,7 +856,8 @@ describe('Testcase EIGHTEEN', () => {
     "left": 10,
     "width": 10,
   };
-  const windowC: chrome.windows.Window = {
+  const window3: chrome.windows.Window = {
+    "id": 3,
     "focused": true,
     "alwaysOnTop": false,
     "incognito": false,
@@ -827,11 +867,19 @@ describe('Testcase EIGHTEEN', () => {
     "width": 20,
   };
   test('Left-to-Right Ordering', () => {
-    // assert(windowsInOrder(windowA, windowB, Directions.RIGHT));
-    // assert(windowsInOrder(windowB, windowC, Directions.RIGHT));
+    assert.equal(getNextWindowId(window1, [window1, window2, window3], Direction.RIGHT), window3.id);
+    assert.equal(getNextWindowId(window3, [window1, window2, window3], Direction.RIGHT), window2.id);
   });
   test('Right-to-Left Ordering', () => {
-    // assert(windowsInOrder(windowB, windowA, Directions.LEFT));
-    // assert(windowsInOrder(windowB, windowC, Directions.LEFT));
+    assert.equal(getNextWindowId(window2, [window1, window2, window3], Direction.LEFT), window3.id);
+    assert.equal(getNextWindowId(window3, [window1, window2, window3], Direction.LEFT), window1.id);
+  });
+  test('Top-to-Bottom Ordering', () => {
+    assert.equal(getNextWindowId(window1, [window1, window2, window3], Direction.DOWN), window2.id);
+    assert.equal(getNextWindowId(window2, [window1, window2, window3], Direction.DOWN), window3.id);
+  });
+  test('Bottom-to-Top Ordering', () => {
+    assert.equal(getNextWindowId(window3, [window1, window2, window3], Direction.UP), window2.id);
+    assert.equal(getNextWindowId(window2, [window1, window2, window3], Direction.UP), window1.id);
   });
 });

@@ -1,32 +1,16 @@
-import { Directions, windowsInOrder } from "./helpers";
+import { Direction, getNextWindowId } from "./helpers";
 
 /**
  * Get all of the selected tabs from the currently focused window, and attach
  * them to the next window over in the direction specified. If no window is
  * found in the specified direction, then no change is made.
- * @param {Directions} direction - The direction to look for the next window
+ * @param {Direction} direction - The direction to look for the next window
  */
-export function attach(direction: Directions) {
+export function attach(direction: Direction) {
   Promise.all([chrome.windows.getLastFocused({ "populate": true }), chrome.windows.getAll({})]
   ).then(([focusedWindow, allWindows]) => {
-    let nextWindow: chrome.windows.Window | null = null;
-    for (let currentWindow of allWindows) {
-      if (currentWindow.id == focusedWindow.id || !windowsInOrder(focusedWindow, currentWindow, direction)) {
-        continue;
-      }
-
-      if (nextWindow == null) {
-        nextWindow = currentWindow;
-        continue;
-      }
-
-      if (windowsInOrder(nextWindow, currentWindow, direction)) {
-        continue;
-      }
-      nextWindow = currentWindow;
-    }
-
-    if (nextWindow == null || nextWindow.id === undefined) {
+    let nextWindowId = getNextWindowId(focusedWindow, allWindows, direction);
+    if (nextWindowId == focusedWindow.id) {
       console.log("No windows found in direction:", direction);
       return;
     }
@@ -41,7 +25,7 @@ export function attach(direction: Directions) {
     }
 
     // Move the tabs to the end of the next Window
-    chrome.tabs.move(focusedTabs, { "windowId": nextWindow.id, "index": -1 });
+    chrome.tabs.move(focusedTabs, { "windowId": nextWindowId, "index": -1 });
 
     // Setting a tab as active resets the selection, so we only set the first moved tab as active
     let isFirst = true;
@@ -52,7 +36,7 @@ export function attach(direction: Directions) {
     }
 
     // Move the focus to the new window
-    chrome.windows.update(nextWindow.id, { "focused": true });
+    chrome.windows.update(nextWindowId, { "focused": true });
   }).catch(error => {
     console.log("Unable to query windows:", error);
   });

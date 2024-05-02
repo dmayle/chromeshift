@@ -1,9 +1,28 @@
 /** The cardinal directions supported by this extension */
-export enum Directions {
+export enum Direction {
   UP,
   DOWN,
   LEFT,
   RIGHT
+}
+
+interface Window {
+  // We don't care about the first three properties, but they're required
+  // properties of chrome.windows.Window and we can't use type predicates
+  // without them.
+  focused: boolean;
+  alwaysOnTop: boolean;
+  incognito: boolean;
+
+  id: number,
+  top: number,
+  left: number,
+  width: number,
+  height: number,
+}
+
+function isWindow(chromeWindow: chrome.windows.Window): chromeWindow is Window {
+  return chromeWindow.id !== undefined && chromeWindow.top !== undefined && chromeWindow.left !== undefined && chromeWindow.width !== undefined && chromeWindow.height !== undefined;
 }
 
 /**
@@ -26,24 +45,8 @@ export function checkCommandShortcuts() {
   });
 }
 
-/**
- * Helper function to return which direction is 90 degrees clockwise from the
- * supplied direction.
- */
-function clockwise(direction: Directions) {
-  switch (direction) {
-    case Directions.UP:
-      return Directions.RIGHT;
-    case Directions.DOWN:
-      return Directions.LEFT;
-    case Directions.LEFT:
-      return Directions.UP;
-    case Directions.RIGHT:
-      return Directions.DOWN;
-    default:
-      console.log("Unsupported direction:", direction);
-      return Directions.UP;
-  }
+function getCenter(window: Window): {x: number, y: number} {
+  return {x: window.left + window.width / 2, y: window.top + window.height / 2};
 }
 
 /**
@@ -56,50 +59,91 @@ function clockwise(direction: Directions) {
  * stacked windows without having to change which attach shortcut is being
  * used.
  */
-export function windowsInOrder(firstWindow: chrome.windows.Window, secondWindow: chrome.windows.Window, direction: Directions, checkRotated = true): boolean {
-  let firstEdge: number | undefined, secondEdge: number | undefined;
-  if (firstWindow.top === undefined || firstWindow.height === undefined || firstWindow.left === undefined || firstWindow.width === undefined) {
-    throw new TypeError("First window passed to windowsInOrder is invalid!");
-  }
-  if (secondWindow.top === undefined || secondWindow.height === undefined || secondWindow.left === undefined || secondWindow.width === undefined) {
-    throw new TypeError("First window passed to windowsInOrder is invalid!");
-  }
+function windowsInOrder(firstWindow: Window, secondWindow: Window, direction: Direction): boolean {
+  let inOrder = true;
+  var firstCenter: number, secondCenter: number;
   switch (direction) {
-    case Directions.UP:
-      firstEdge = firstWindow.top;
-      secondEdge = secondWindow.top;
+    case Direction.LEFT:
+      inOrder = false;
+    case Direction.RIGHT:
+      ({x: firstCenter} = getCenter(firstWindow));
+      ({x: secondCenter} = getCenter(secondWindow));
+      if (firstCenter < secondCenter) {
+        return inOrder;
+      } else if (firstCenter > secondCenter) {
+        return !inOrder;
+      }
+      if (firstWindow.left < secondWindow.left) {
+        return inOrder;
+      } else if (firstWindow.left > secondWindow.left) {
+        return !inOrder;
+      }
+      if (firstWindow.top < secondWindow.top) {
+        return inOrder;
+      } else if (firstWindow.top > secondWindow.top) {
+        return !inOrder;
+      }
+      if (firstWindow.id < secondWindow.id) {
+        return inOrder;
+      } else if (firstWindow.id > secondWindow.id) {
+        return !inOrder;
+      }
       break;
-    case Directions.DOWN:
-      firstEdge = firstWindow.top + firstWindow.height;
-      secondEdge = secondWindow.top + secondWindow.height;
+    case Direction.UP:
+      inOrder = false;
+    case Direction.DOWN:
+      ({y: firstCenter} = getCenter(firstWindow));
+      ({y: secondCenter} = getCenter(secondWindow));
+      if (firstCenter < secondCenter) {
+        return inOrder;
+      } else if (firstCenter > secondCenter) {
+        return !inOrder;
+      }
+      if (firstWindow.top < secondWindow.top) {
+        return inOrder;
+      } else if (firstWindow.top > secondWindow.top) {
+        return !inOrder;
+      }
+      if (firstWindow.left < secondWindow.left) {
+        return inOrder;
+      } else if (firstWindow.left > secondWindow.left) {
+        return !inOrder;
+      }
+      if (firstWindow.id < secondWindow.id) {
+        return inOrder;
+      } else if (firstWindow.id > secondWindow.id) {
+        return !inOrder;
+      }
       break;
-    case Directions.LEFT:
-      firstEdge = firstWindow.left;
-      secondEdge = secondWindow.left;
-      break;
-    case Directions.RIGHT:
-      firstEdge = firstWindow.left + firstWindow.width;
-      secondEdge = secondWindow.left + secondWindow.width;
-      break;
-    default:
-      console.log("Unsupported direction:", direction);
-      return false;
-  }
 
-  if (firstEdge == secondEdge) {
-    return checkRotated && windowsInOrder(firstWindow, secondWindow, clockwise(direction), false);
-  }
-
-  switch (direction) {
-    case Directions.UP:
-    case Directions.LEFT:
-      return firstEdge > secondEdge;
-    case Directions.DOWN:
-    case Directions.RIGHT:
-      return firstEdge < secondEdge;
     default:
-      console.log("Unsupported direction:", direction);
+      break;
   }
   return false;
 }
 
+
+export function getNextWindowId(firstWindow: chrome.windows.Window, allWindows: chrome.windows.Window[], direction: Direction): number {
+  if (!isWindow(firstWindow)) {
+    throw new TypeError("getNextWindowId: First window is invalid!");
+  }
+  let nextWindow: Window | null = null;
+  for (let currentWindow of allWindows) {
+    if (!isWindow(currentWindow) || currentWindow.id == firstWindow.id) {
+      continue;
+    }
+    if (!windowsInOrder(firstWindow, currentWindow, direction)) {
+      continue;
+    }
+    if (nextWindow === null) {
+      nextWindow = currentWindow;
+      continue;
+    }
+    if (windowsInOrder(currentWindow, nextWindow, direction)) {
+      // currentWindow is both after firstWindow and before nextWindow
+      nextWindow = currentWindow;
+    }
+  }
+
+  return nextWindow === null ? firstWindow.id : nextWindow.id;
+}
